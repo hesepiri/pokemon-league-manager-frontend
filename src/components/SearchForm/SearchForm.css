@@ -67,6 +67,8 @@
   }
 
   .search-form__button {
+    font-family: "Inter", "Arial", sans-serif;
+    font-weight: 500;
     border-radius: 8px;
     padding: 14px;
   }

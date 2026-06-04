@@ -5,22 +5,44 @@
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #e9ecef;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .about__container {
-  max-width: 800px;
+  max-width: 1000px; /* Ancho alineado con el Header y el Hero */
   width: 100%;
-  text-align: center;
+  display: flex;
+  gap: 56px; /* Espacio de separación entre la foto y el texto */
+  align-items: center;
+}
+
+/* Contenedor de la foto de perfil */
+.about__avatar-container {
+  flex-shrink: 0; /* Evita que la imagen se colapse o deforme */
+}
+
+.about__avatar {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%; /* Hace la imagen completamente redonda como el Figma */
+  object-fit: cover;
+  background-color: #f8f9fa; /* Fondo gris suave por si la imagen tiene transparencias */
+}
+
+/* Contenedor del texto descriptivo */
+.about__content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  text-align: left; /* Alineación limpia a la izquierda */
 }
 
 .about__title {
   font-family: "Roboto Slab", "Georgia", serif;
-  font-size: 32px;
+  font-size: 36px;
   color: #212529;
-  margin-bottom: 16px;
+  margin: 0 0 24px 0;
   font-weight: 700;
 }
 
@@ -29,5 +51,29 @@
   font-size: 16px;
   color: #495057;
   line-height: 1.6;
-  max-width: 600px;
+  margin: 0;
+}
+
+/* Responsivo para Tabletas y Celulares (Modo Vertical) */
+@media screen and (max-width: 768px) {
+  .about__container {
+    flex-direction: column; /* Pone la imagen arriba y el texto abajo */
+    gap: 32px;
+    text-align: center;
+  }
+
+  .about__content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .about__avatar {
+    width: 180px;
+    height: 180px;
+  }
+
+  .about__title {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
 }

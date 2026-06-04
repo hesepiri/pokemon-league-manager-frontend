@@ -17,10 +17,12 @@
   text-align: center;
 }
 
-.not-found__icon {
-  font-size: 48px;
+.not-found__icon-container {
   margin-bottom: 24px;
-  user-select: none;
+}
+
+.not-found__icon {
+  display: block;
 }
 
 .not-found__title {
@@ -35,7 +37,7 @@
 .not-found__description {
   font-family: "Inter", "Arial", sans-serif;
   font-size: 16px;
-  color: #666666; /* Gris secundario para no cansar la vista */
+  color: #b0b0b0; /* Un gris más tenue idéntico al de la imagen_32.png */
   line-height: 1.6;
   margin: 0;
 }
@@ -43,11 +45,11 @@
 /* Optimización responsiva */
 @media screen and (max-width: 768px) {
   .not-found {
-    padding: 40px 16px;
+    padding: 60px 16px;
   }
 
   .not-found__title {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .not-found__description {

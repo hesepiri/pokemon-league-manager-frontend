@@ -1,0 +1,62 @@
+.team-header {
+  background-color: #ffffff;
+  padding: 40px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.team-header__container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left; /* Alineado a la izquierda idéntico al Figma de artículos guardados */
+}
+
+.team-header__subtitle {
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: 14px;
+  color: #868e96;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.team-header__title {
+  font-family: "Roboto Slab", "Georgia", serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+  max-width: 600px;
+  line-height: 1.2;
+}
+
+.team-header__summary {
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: 18px;
+  color: #495057;
+  margin: 0;
+}
+
+.team-header__bold {
+  font-weight: 700;
+  color: #000000;
+}
+
+/* Soporte responsivo para dispositivos móviles basado en las capturas */
+@media screen and (max-width: 768px) {
+  .team-header {
+    padding: 24px 16px;
+  }
+
+  .team-header__title {
+    font-size: 28px;
+  }
+
+  .team-header__summary {
+    font-size: 14px;
+  }
+}

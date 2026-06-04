@@ -14,8 +14,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Forzar a elementos de formulario a heredar las tipografías oficiales del proyecto */
 button,
 input,
+select,
 textarea {
-  font-family: inherit;
+  font-family: "Inter", "Arial", sans-serif;
 }

@@ -4,26 +4,96 @@
   box-sizing: border-box;
 }
 
-.hero {
-  /* Un degradado ultra sutil que le da un toque moderno y suave */
-  background: linear-gradient(180deg, #f8f9fa 0%, #f1f3f5 100%);
-  padding: 120px 20px;
+/*.hero {*/
+/*background-color: #f8f9fa;*/
+/*background-color: #ffffff;*/
+
+/* Diseñamos una Pokébola minimalista y abstracta usando degradados radiales y lineales nativos en CSS */
+/*background-image:
+    radial-gradient(
+      circle at center,
+      #ffffff 15px,
+      #212529 16px,
+      #212529 24px,
+      transparent 25px
+    ),
+    linear-gradient(
+      to bottom,
+      #ef5350 48%,
+      #212529 48%,
+      #212529 52%,
+      #ffffff 52%
+    );
+
+  background-repeat: no-repeat;*/
+
+/* Posicionamos el arte en el costado derecho con un tamaño perfecto de 300px */
+/*background-position: calc(100% - 80px) center;
+  background-size: 300px 300px;*/
+
+/* Añadimos un borde redondeado sutil al gráfico usando una máscara o contenedor si se prefiere, 
+     pero al ser fondo nativo flotará elegantemente con opacidad suave */
+/*opacity: 0.95;
+
+  padding: 120px 40px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   border-bottom: 1px solid #e9ecef;
+  min-height: 500px;
+  box-sizing: border-box;
+}*/
+
+.hero {
+  /* Cambiamos el fondo a blanco puro para unificarlo con el contenedor de tu imagen */
+  background-color: #ffffff;
+
+  padding: 120px 40px;
+  display: flex;
+  /* Distribuye el contenido: el bloque de texto a la izquierda y la imagen a la derecha */
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e9ecef;
+  min-height: 500px;
+  box-sizing: border-box;
 }
 
-/* El secreto está aquí: limitamos el bloque completo */
 .hero__content {
-  max-width: 650px;
+  max-width: 550px;
   width: 100%;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
+  /* Capa de respiro para asegurar que el texto jamás se encime con el gráfico de la derecha */
+  z-index: 2;
 }
+
+/*.hero {
+  background-color: #f1f3f5;
+  /* Colocamos la imagen al extremo derecho del contenedor principal */
+/*background-image: url("../../images/pkmn_background.png");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 40px) center;
+  background-size: contain;
+
+  padding: 120px 40px;
+  display: flex;
+  justify-content: flex-start; */ /* Todo el texto empujado a la izquierda */
+/*align-items: center;
+  border-bottom: 1px solid #e9ecef;
+  min-height: 500px;
+  box-sizing: border-box;
+}
+
+.hero__content {
+  max-width: 550px; */ /* Limita el texto para que jamás tape la imagen de la derecha */
+/*width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}*/
 
 .hero__title {
   font-family: "Roboto Slab", "Georgia", serif;
@@ -44,7 +114,7 @@
 }
 
 /* Ajuste responsivo impecable */
-@media screen and (max-width: 768px) {
+/*@media screen and (max-width: 768px) {
   .hero {
     padding: 60px 16px;
   }
@@ -56,5 +126,70 @@
   .hero__subtitle {
     font-size: 15px;
     margin-bottom: 24px;
+  }
+}*/
+
+/* Estilos para el contenedor de la nueva imagen */
+.hero__image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.hero__image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Ajuste adaptivo para dispositivos móviles */
+/*@media screen and (max-width: 900px) {
+  .hero {*/
+/* En pantallas móviles movemos el gráfico al centro con opacidad muy baja para que actúe de marca de agua detrás del texto */
+/*background-position: center;
+    background-size: 250px 250px;
+    background-image:
+      radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.9) 15px,
+        rgba(33, 37, 41, 0.15) 16px,
+        rgba(33, 37, 41, 0.15) 24px,
+        transparent 25px
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(239, 83, 80, 0.12) 48%,
+        rgba(33, 37, 41, 0.15) 48%,
+        rgba(33, 37, 41, 0.15) 52%,
+        rgba(255, 255, 255, 0.12) 52%
+      );
+    justify-content: center;
+    padding: 60px 16px;
+  }
+
+  .hero__content {
+    align-items: center;
+    text-align: center;
+  }
+}*/
+
+/* Responsivo para pantallas móviles */
+@media screen and (max-width: 900px) {
+  .hero {
+    flex-direction: column; /* En celular, el texto arriba y la imagen abajo */
+    justify-content: center;
+    padding: 60px 16px;
+    gap: 40px;
+  }
+
+  .hero__content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero__image-container {
+    max-width: 280px;
   }
 }
