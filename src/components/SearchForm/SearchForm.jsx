@@ -1,28 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import "./SearchForm.css";
 
-function SearchForm({ onSearch }) {
-  const [searchQuery, setSearchQuery] = useState("");
-
+function SearchForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      // Aquí se disparará la consulta a la PokéAPI en la etapa 1.2
-      console.log("Buscando Pokémon:", searchQuery);
-    }
+    // La lógica de búsqueda con la PokéAPI se integrará en sprints posteriores
   };
 
   return (
-    <form class="search-form" onSubmit={handleSubmit}>
+    <form className="search-form" onSubmit={handleSubmit}>
       <input
         type="text"
-        class="search-form__input"
-        placeholder="Introduce el nombre o ID de tu Pokémon..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Introduce el nombre del Pokémon..."
+        className="search-form__input"
         required
       />
-      <button type="submit" class="search-form__button">
+      <button type="submit" className="search-form__button">
         Buscar
       </button>
     </form>

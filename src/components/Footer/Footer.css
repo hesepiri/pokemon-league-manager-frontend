@@ -1,0 +1,72 @@
+.footer {
+  background-color: #ffffff;
+  padding: 40px 0;
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid #e9ecef; /* Línea divisoria superior sutil */
+}
+
+.footer__container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between; /* Manda el texto a la izquierda y los links a la derecha */
+  align-items: center;
+}
+
+.footer__copyright {
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: 14px;
+  color: #868e96; /* Gris intermedio suave */
+  line-height: 1.5;
+}
+
+/* Contenedor Flex para alinear los enlaces de forma horizontal */
+.footer__navigation {
+  display: flex;
+  align-items: center;
+}
+
+/* Flexbox para alinear la lista completa en una línea horizontal */
+.footer__links {
+  list-style: none; /* Quitamos los puntitos de la lista */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 24px; /* Espaciado idéntico entre GitHub y TripleTen */
+}
+
+.footer__item {
+  display: inline-flex;
+}
+
+.footer__link {
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: 14px;
+  color: #868e96;
+  text-decoration: none; /* Quitamos el subrayado tosco por defecto */
+  font-weight: 500;
+  transition: color 0.2s ease; /* Transición suave para la microanimación */
+}
+
+/* Microanimación al pasar el cursor */
+.footer__link:hover {
+  color: #2f80ed; /* Cambia al azul oficial del UI Kit al hacer hover */
+}
+
+.footer__brand {
+  font-family: "Roboto Slab", "Georgia", serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #212529;
+}
+
+@media screen and (max-width: 768px) {
+  .footer__container {
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px;
+    text-align: center;
+  }
+}

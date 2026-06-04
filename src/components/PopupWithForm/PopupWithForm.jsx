@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import "./PopupWithForm.css";
 
 function PopupWithForm({ isOpen, onClose }) {
-  // Manejador para cerrar con la tecla Esc, tal como lo pide la rúbrica
+  // Escuchador para la tecla ESC
   useEffect(() => {
+    // Si el popup no está abierto, no agregamos el evento
     if (!isOpen) return;
 
     const handleEscClose = (e) => {
@@ -13,10 +14,14 @@ function PopupWithForm({ isOpen, onClose }) {
     };
 
     document.addEventListener("keydown", handleEscClose);
-    return () => document.removeEventListener("keydown", handleEscClose);
+
+    // Limpiamos el evento al desmontar o cerrar el componente
+    return () => {
+      document.removeEventListener("keydown", handleEscClose);
+    };
   }, [isOpen, onClose]);
 
-  // Manejador para cerrar al hacer clic en el área gris externa (Overlay)
+  // Manejador para cerrar al hacer clic en el overlay (fuera del contenedor)
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -25,41 +30,37 @@ function PopupWithForm({ isOpen, onClose }) {
 
   return (
     <div
-      class={`popup ${isOpen ? "popup_opened" : ""}`}
+      className={`popup ${isOpen ? "popup_opened" : ""}`}
       onClick={handleOverlayClick}
     >
-      <div class="popup__container">
-        {/* Botón de la cruz con microanimación mediante CSS */}
+      <div className="popup__container">
+        {/* Botón X de cierre superior derecho */}
         <button
           type="button"
-          class="popup__close-button"
+          className="popup__close"
           onClick={onClose}
           aria-label="Cerrar modal"
-        />
+        >
+          ×
+        </button>
 
-        <h2 class="popup__title">Acceso a la Liga Pokémon</h2>
+        <h3 className="popup__title">Acceso a la Liga Pokémon</h3>
 
-        <form class="popup__form" name="login-form">
-          <label class="popup__label">
-            Email
-            <input
-              type="email"
-              class="popup__input"
-              placeholder="Tu correo electrónico"
-              required
-            />
-          </label>
-          <label class="popup__label">
-            Contraseña
-            <input
-              type="password"
-              class="popup__input"
-              placeholder="Tu contraseña"
-              required
-            />
-          </label>
-          <button type="submit" class="popup__submit-button">
-            Ingresar
+        <form className="popup__form">
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            className="popup__input"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            className="popup__input"
+            required
+          />
+          <button type="submit" className="popup__submit">
+            Entrar
           </button>
         </form>
       </div>

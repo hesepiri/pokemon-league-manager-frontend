@@ -1,0 +1,56 @@
+.not-found {
+  width: 100%;
+  background-color: #ffffff; /* Fondo blanco limpio como el resto de la app */
+  padding: 80px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.not-found__container {
+  max-width: 450px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.not-found__icon {
+  font-size: 48px;
+  margin-bottom: 24px;
+  user-select: none;
+}
+
+.not-found__title {
+  font-family: "Roboto Slab", "Georgia", serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #000000; /* Texto del título claro y visible */
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+}
+
+.not-found__description {
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: 16px;
+  color: #666666; /* Gris secundario para no cansar la vista */
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Optimización responsiva */
+@media screen and (max-width: 768px) {
+  .not-found {
+    padding: 40px 16px;
+  }
+
+  .not-found__title {
+    font-size: 20px;
+  }
+
+  .not-found__description {
+    font-size: 14px;
+  }
+}

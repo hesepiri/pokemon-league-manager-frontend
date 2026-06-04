@@ -1,0 +1,74 @@
+.navigation {
+  display: flex;
+  align-items: center;
+}
+
+.navigation__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.navigation__item {
+  display: inline-flex;
+}
+
+.navigation__link {
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: 16px;
+  color: #666666;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 0;
+  transition: color 0.2s ease;
+}
+
+/* Microanimación al pasar el cursor sobre los enlaces */
+.navigation__link:hover {
+  color: #000000;
+}
+
+/* Estado de la pestaña activa según React Router */
+.navigation__link_active {
+  color: #000000;
+  border-bottom: 2px solid #2f80ed; /* El azul clásico de los botones del UI Kit */
+}
+
+/* El botón de acción basado en el UI Kit */
+.navigation__button {
+  background-color: transparent;
+  border: 2px solid #2f80ed;
+  color: #2f80ed;
+  padding: 10px 24px;
+  border-radius: 100px; /* Al igual que el buscador, un valor alto lo hace completamente ovalado y suave */
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* Microanimación del botón de inicio de sesión */
+.navigation__button:hover {
+  background-color: #2f80ed;
+  color: #ffffff;
+}
+
+@media screen and (max-width: 768px) {
+  .navigation__list {
+    gap: 16px;
+  }
+
+  .navigation__link {
+    font-size: 14px;
+  }
+
+  .navigation__button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

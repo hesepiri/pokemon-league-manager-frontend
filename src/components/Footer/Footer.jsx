@@ -5,28 +5,28 @@ function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer class="footer">
-      <div class="footer__container">
-        <p class="footer__copyright">
+    <footer className="footer">
+      <div className="footer__container">
+        <p className="footer__copyright">
           &copy; {currentYear} Pokemon League Manager. Desarrollado por Héctor
           Pinedo.
         </p>
-        <nav class="footer__navigation">
-          <ul class="footer__links">
-            <li class="footer__item">
+        <nav className="footer__navigation">
+          <ul className="footer__links">
+            <li className="footer__item">
               <a
                 href="https://github.com/hesepiri"
-                class="footer__link"
+                className="footer__link"
                 target="_blank"
                 rel="noreferrer"
               >
                 GitHub
               </a>
             </li>
-            <li class="footer__item">
+            <li className="footer__item">
               <a
-                href="https://tripleten.com"
-                class="footer__link"
+                href="https://tripleten.com/es-mex/?from=us"
+                className="footer__link"
                 target="_blank"
                 rel="noreferrer"
               >
