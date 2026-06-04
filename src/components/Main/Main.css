@@ -136,12 +136,36 @@
   align-items: center;
   max-width: 400px;
   width: 100%;
+  position: relative;
+  background: radial-gradient(
+    circle,
+    rgba(241, 222, 92, 0.2) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  border-radius: 50%;
+  padding: 20px;
 }
 
+/* Un sutil efecto de brillo neón para que la ratita amarilla se vea "poderosa" */
 .hero__image {
   max-width: 100%;
   height: auto;
   object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(241, 222, 92, 0.6));
+  animation: float 4s ease-in-out infinite; /* Animación de flotado flotante */
+}
+
+/* Logramos que flote suavemente en su lugar para que tenga vida propia */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 /* Ajuste adaptivo para dispositivos móviles */
