@@ -1,72 +1,94 @@
 .footer {
   background-color: #ffffff;
-  padding: 40px 0;
+  border-top: 1px solid #e9ecef;
   width: 100%;
   box-sizing: border-box;
-  border-top: 1px solid #e9ecef; /* Línea divisoria superior sutil */
+  padding: 24px 0; /* Dejamos el padding vertical aquí */
 }
 
+/* El contenedor limita el ancho y distribuye los bloques a los extremos */
 .footer__container {
-  max-width: 1440px;
+  max-width: 1000px; /* Alineado al ancho del Header y Hero */
+  width: 100%;
   margin: 0 auto;
   padding: 0 40px;
   display: flex;
-  justify-content: space-between; /* Manda el texto a la izquierda y los links a la derecha */
+  justify-content: space-between;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .footer__copyright {
   font-family: "Inter", "Arial", sans-serif;
   font-size: 14px;
-  color: #868e96; /* Gris intermedio suave */
+  color: #868e96;
+  margin: 0;
   line-height: 1.5;
 }
 
-/* Contenedor Flex para alinear los enlaces de forma horizontal */
+/* Agrupa el texto de TripleTen y la lista de íconos */
 .footer__navigation {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.footer__link-text {
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: 14px;
+  color: #495057;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer__link-text:hover {
+  color: #2f80ed; /* El azul oficial de tu UI Kit */
+}
+
+.footer__social-icons {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 16px;
+}
+
+.footer__social-item {
   display: flex;
   align-items: center;
 }
 
-/* Flexbox para alinear la lista completa en una línea horizontal */
-.footer__links {
-  list-style: none; /* Quitamos los puntitos de la lista */
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 24px; /* Espaciado idéntico entre GitHub y TripleTen */
+.footer__social-link {
+  display: inline-block;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
-.footer__item {
-  display: inline-flex;
+.footer__social-link:hover {
+  transform: translateY(-2px); /* Microanimación de levantamiento */
+  opacity: 0.8;
 }
 
-.footer__link {
-  font-family: "Inter", "Arial", sans-serif;
-  font-size: 14px;
-  color: #868e96;
-  text-decoration: none; /* Quitamos el subrayado tosco por defecto */
-  font-weight: 500;
-  transition: color 0.2s ease; /* Transición suave para la microanimación */
+/* Control del tamaño exacto para los tres archivos SVG de svgrepo */
+.footer__icon {
+  width: 22px;
+  height: 22px;
+  display: block;
 }
 
-/* Microanimación al pasar el cursor */
-.footer__link:hover {
-  color: #2f80ed; /* Cambia al azul oficial del UI Kit al hacer hover */
-}
-
-.footer__brand {
-  font-family: "Roboto Slab", "Georgia", serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #212529;
-}
-
+/* Media Query Responsiva: Excelente para pantallas de Tabletas y Móviles */
 @media screen and (max-width: 768px) {
   .footer__container {
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: column-reverse; /* El copyright se va hasta abajo en celular */
+    gap: 20px;
     padding: 0 16px;
     text-align: center;
+  }
+
+  .footer__navigation {
+    flex-direction: column; /* Pone TripleTen arriba de los círculos de redes */
+    gap: 16px;
   }
 }
