@@ -1,0 +1,36 @@
+/* Contenedor principal de la página */
+.page {
+  max-width: 1440px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background-color: #1a1a1a; /* Fondo oscuro estilo Dashboard gaming */
+  color: #ffffff;
+  font-family: "Inter", "Arial", sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Contenedor del panel del Dashboard alterno */
+.content {
+  flex: 1;
+  padding: 40px 20px;
+}
+
+.pokemon-dashboard {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.pokemon-dashboard__title {
+  font-family: "Roboto Slab", "Georgia", serif;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.pokemon-dashboard__placeholder {
+  font-size: 16px;
+  color: #aaaaaa;
+}
