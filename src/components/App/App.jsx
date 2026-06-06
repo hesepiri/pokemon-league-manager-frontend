@@ -33,7 +33,8 @@ function App() {
   const handleOpenPopup = () => setIsPopupOpen(true);
   const handleClosePopup = () => setIsPopupOpen(false);
 
-  // Manejador asíncrono robusto para la API
+  // Manejador asíncrono bilingüe automatizado
+  // Manejador asíncrono bilingüe con soporte para búsquedas parciales
   const handleSearchSubmit = async (keyword) => {
     const cleanKeyword = keyword.trim().toLowerCase();
     if (!cleanKeyword) return;
@@ -41,17 +42,55 @@ function App() {
     setIsLoading(true);
     setSearchError("");
     setPokemonList([]);
-    setVisibleCount(3); // Reseteamos el contador siempre a 3
+    setVisibleCount(3);
 
     navigate("/dashboard");
 
     try {
-      // Consumimos el lote de 100 elementos usando tu clase pokeApi
-      const data = await pokeApi.getInitialPokemons(100);
+      // 1. Traemos el catálogo completo de la PokéAPI (en inglés)
+      const data = await pokeApi.getInitialPokemons(1100);
 
-      // Filtramos las coincidencias que contengan la palabra clave
-      const filteredResults = data.results.filter((p) =>
-        p.name.includes(cleanKeyword),
+      // 2. Diccionario de equivalencias oficiales
+      const spanishOverrides = {
+        ferrosaco: "iron-bundle",
+        flamariete: "gouging-fire",
+        "codigo cero": "type-null",
+        "código cero": "type-null",
+        deoxys: "deoxys-normal",
+        colagrito: "scream-tail",
+        furioseta: "brute-bonnet",
+        melenalete: "flutter-mane",
+        colmilloargo: "great-tusk",
+        bramaluna: "roaring-moon",
+        ondagua: "walking-wake",
+        electrofuria: "raging-bolt",
+        ferrodada: "iron-treads",
+        ferropalmas: "iron-hands",
+        ferrocuello: "iron-jugulis",
+        ferromotita: "iron-moth",
+        ferropúas: "iron-thorns",
+        ferroporojo: "iron-valiant",
+        ferroverdor: "iron-leaves",
+        coronacorte: "iron-crown",
+        ferrotesta: "iron-boulder",
+      };
+
+      // 3. DETECTOR DE COINCIDENCIAS PARCIALES EN ESPAÑOL
+      // Creamos una lista de términos en inglés que queremos buscar en la API
+      const searchTerms = [cleanKeyword];
+
+      // Iteramos el diccionario: si el usuario escribió una parte del nombre en español (ej. "ferro")
+      // añadimos el nombre en inglés correspondiente (ej. "iron-bundle", "iron-treads") a los términos de búsqueda
+      Object.keys(spanishOverrides).forEach((spanishName) => {
+        if (spanishName.includes(cleanKeyword)) {
+          searchTerms.push(spanishOverrides[spanishName]);
+        }
+      });
+
+      // 4. FILTRADO MULTI-TÉRMINO
+      // El Pokémon pasa el filtro si su nombre en inglés contiene CUALQUIERA de nuestros términos
+      const filteredResults = data.results.filter((pokemon) =>
+        searchTerms.some((term) => pokemon.name.includes(term)),
       );
 
       if (filteredResults.length === 0) {
@@ -61,7 +100,7 @@ function App() {
         return;
       }
 
-      // Resolvemos el detalle de cada Pokémon en paralelo de manera segura
+      // 5. Descarga de detalles en paralelo
       const detailedPromises = filteredResults.map((p) =>
         fetch(p.url).then((res) => {
           if (!res.ok) throw new Error();
@@ -78,7 +117,6 @@ function App() {
       );
     } catch (err) {
       console.error(err);
-      // Mensaje de error largo oficial exigido por la lista de comprobación de TripleTen
       setSearchError(
         "Lo sentimos, algo ha salido mal durante la solicitud. Es posible que haya un problema de conexión o que el servidor no funcione. Por favor, inténtalo más tarde.",
       );

@@ -19,17 +19,26 @@ function PokemonCard({ pokemon }) {
 
   return (
     <article className="pokemon-card">
-      {/* Insignia del tipo principal (Equivale a la categoría de la noticia) */}
-      <span className="pokemon-card__type">
-        {pokemon.types?.[0]?.type?.name.toUpperCase()}
-      </span>
+      {/* CONTENEDOR FLEX: Agrupa las etiquetas para que se alineen horizontalmente */}
+      <div className="pokemon-card__types-container">
+        {pokemon.types?.map((item, index) => {
+          const typeName = item.type.name.toLowerCase();
+          return (
+            <span
+              key={index}
+              className={`pokemon-card__type pokemon-card__type_type_${typeName}`}
+            >
+              {item.type.name.toUpperCase()}
+            </span>
+          );
+        })}
+      </div>
 
       <div className="pokemon-card__image-wrapper">
         <img src={imageUrl} alt={pokemonName} className="pokemon-card__image" />
       </div>
 
       <div className="pokemon-card__content">
-        {/* ID de la Pokédex (Equivale a la fecha de publicación) */}
         <span className="pokemon-card__id">
           Pokédex #{String(pokemon.id).padStart(3, "0")}
         </span>
