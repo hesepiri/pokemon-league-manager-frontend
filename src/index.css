@@ -1,4 +1,6 @@
-/* Limpieza de márgenes por defecto y herencia tipográfica limpia */
+/* Reemplaza todo el contenido de src/index.css por este bloque limpio */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Slab:wght@400;700&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -14,7 +16,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Forzar a elementos de formulario a heredar las tipografías oficiales del proyecto */
 button,
 input,
 select,

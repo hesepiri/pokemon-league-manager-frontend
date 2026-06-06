@@ -5,7 +5,7 @@
 }
 
 .hero {
-  position: relative; /* Obligatorio para que la capa ::before flote correctamente */
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,14 +15,14 @@
   box-sizing: border-box;
   overflow: hidden;
 
-  /* Inyección del fondo de rayos estilo cómic */
+  /* Fondo de rayos */
   background-image: url("../../images/4814407.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* Capa transparente intermedia para que el fondo no sature los ojos y suavice el contraste */
+/* Capa transparente intermedia para dar contraste al texto */
 .hero::before {
   content: "";
   position: absolute;
@@ -30,16 +30,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(
-    0,
-    0,
-    0,
-    0.2
-  ); /* Oscurece un 20% el fondo para hacer resaltar las letras blancas */
+  background: rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
-/* Empujamos el contenido real por encima de la capa del fondo */
 .hero__content,
 .hero__image-container {
   position: relative;
@@ -59,23 +53,23 @@
   font-family: "Roboto Slab", "Georgia", serif;
   font-size: 42px;
   font-weight: 700;
-  color: #ffffff; /* Blanco puro para un contraste brutal sobre el fondo azul */
+  color: #ffffff;
   margin: 0 0 16px 0;
   line-height: 1.25;
   letter-spacing: -0.5px;
-  text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.6); /* Sombra para que se lea perfecto sobre los rayos */
+  text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .hero__subtitle {
   font-family: "Inter", "Arial", sans-serif;
   font-size: 18px;
-  color: #f1f3f5; /* Gris claro premium */
+  color: #f1f3f5;
   margin: 0 0 32px 0;
   line-height: 1.6;
   text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Contenedor de la imagen con su gradiente amarillo de fondo */
+/* Contenedor con el aura amarilla corregido en sintaxis pura */
 .hero__image-container {
   display: flex;
   justify-content: center;
@@ -91,7 +85,6 @@
   padding: 20px;
 }
 
-/* Efecto de brillo neón y animación flotante de Pikachu */
 .hero__image {
   max-width: 100%;
   height: auto;
@@ -112,7 +105,6 @@
   }
 }
 
-/* Ajuste adaptivo para dispositivos móviles */
 @media screen and (max-width: 900px) {
   .hero {
     flex-direction: column;

@@ -1,57 +1,17 @@
-/* Conexión de fuentes obligatoria mediante @font-face */
-@font-face {
-  font-family: "Inter";
-  src:
-    url("../../vendor/fonts/inter-400-regular.woff2") format("woff2"),
-    url("../../vendor/fonts/inter-400-regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Inter";
-  src:
-    url("../../vendor/fonts/inter-500.woff2") format("woff2"),
-    url("../../vendor/fonts/inter-500.woff") format("woff");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Roboto Slab";
-  src:
-    url("../../vendor/fonts/roboto-slab-400-regular.woff2") format("woff2"),
-    url("../../vendor/fonts/roboto-slab-400-regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Roboto Slab";
-  src:
-    url("../../vendor/fonts/roboto-slab-700.woff2") format("woff2"),
-    url("../../vendor/fonts/roboto-slab-700.woff") format("woff");
-  font-weight: 700;
-  font-style: normal;
-}
+/* src/components/App/App.css */
 
 /* Contenedor principal de la página alineado al UI Kit de Figma */
 .page {
   max-width: 1440px;
   min-height: 100vh;
-  /* Centra horizontalmente todo el bloque de la app en monitores grandes */
-  margin: 0 auto;
-
+  margin: 0 auto; /* Centra horizontalmente todo el bloque de la app */
   background-color: #ffffff;
   color: #000000;
-  font-family: "Inter", "Arial", sans-serif;
   display: flex;
   flex-direction: column;
   position: relative;
   box-sizing: border-box;
-
-  /* Agrega una sombra sutil a los costados para que se note el cambio de profundidad */
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05); /* Sombra sutil de profundidad */
 }
 
 /* Contenedor del panel del Dashboard */
@@ -59,12 +19,17 @@
   flex: 1;
   padding: 40px 20px;
   background-color: #f5f5f5; /* Gris claro de fondo para contrastar las tarjetas */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .pokemon-dashboard {
-  max-width: 1000px;
+  /* CORRECCIÓN: Elevamos el ancho máximo a 1280px para que el grid respire por completo */
+  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .pokemon-dashboard__title {
@@ -76,34 +41,60 @@
 
 .pokemon-dashboard__placeholder {
   font-size: 16px;
-  color: #666666; /* Gris intermedio para los textos secundarios */
+  color: #666666;
 }
 
 .pokemon-dashboard__container {
-  max-width: 1280px;
   width: 100%;
-  margin: 40px auto;
+  margin: 40px auto 0;
   padding: 0 24px;
   box-sizing: border-box;
 }
 
-/* Grid estricto de 3 columnas */
+/* Grid estricto de 3 columnas exigido por la rúbrica */
 .pokemon-dashboard__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+  width: 100%;
 }
 
-/* Responsivo para pantallas de tabletas o laptops chicas */
+/* Estilos para el botón de paginación del Dashboard (Rúbrica Etapa 1.2) */
+.pokemon-dashboard__more-button {
+  display: block;
+  margin: 48px auto 0;
+  padding: 16px 40px;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.pokemon-dashboard__more-button:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Ajustes adaptivos y responsivos para pantallas medianas (Tabletas) */
 @media screen and (max-width: 900px) {
   .pokemon-dashboard__grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Responsivo para celulares */
+/* Ajustes adaptivos para pantallas chicas (Celulares) */
 @media screen and (max-width: 600px) {
   .pokemon-dashboard__grid {
     grid-template-columns: 1fr;
+  }
+
+  .pokemon-dashboard__title {
+    font-size: 26px;
   }
 }

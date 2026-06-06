@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import Header from "../Header/Header";
@@ -8,46 +8,88 @@ import Footer from "../Footer/Footer";
 import PopupWithForm from "../PopupWithForm/PopupWithForm";
 import Preloader from "../Preloader/Preloader";
 import PokemonCard from "../PokemonCard/PokemonCard";
-import NotFound from "../NotFound/NotFound"; // Importación al inicio
-import pokeApi from "../../utils/pokeApi"; // Importación de la API
+import NotFound from "../NotFound/NotFound";
+import pokeApi from "../../utils/pokeApi";
 
 function App() {
-  // 1. ESTADOS
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [pokemonData, setPokemonData] = useState(null);
   const [searchError, setSearchError] = useState("");
+
+  // Controladores de estado para el lote de 3 en 3 (Rúbrica Etapa 1.2)
+  const [pokemonList, setPokemonList] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(3);
 
   const navigate = useNavigate();
 
-  // 2. FUNCIONES DE CONTROL (Solo una declaración de cada una)
+  // Leer datos guardados en LocalStorage al montar el componente (Obligatorio)
+  useEffect(() => {
+    const savedPokemon = localStorage.getItem("pokemonSearchResults");
+    if (savedPokemon) {
+      setPokemonList(JSON.parse(savedPokemon));
+    }
+  }, []);
+
   const handleOpenPopup = () => setIsPopupOpen(true);
   const handleClosePopup = () => setIsPopupOpen(false);
 
-  // 3. MANEJADOR DE BÚSQUEDA ASÍNCRONA
-  const handleSearchSubmit = (keyword) => {
+  // Manejador asíncrono robusto para la API
+  const handleSearchSubmit = async (keyword) => {
+    const cleanKeyword = keyword.trim().toLowerCase();
+    if (!cleanKeyword) return;
+
     setIsLoading(true);
     setSearchError("");
-    setPokemonData(null);
+    setPokemonList([]);
+    setVisibleCount(3); // Reseteamos el contador siempre a 3
 
-    // ¡La magia está aquí! Redirigimos al dashboard DE INMEDIATO
     navigate("/dashboard");
 
-    pokeApi
-      .searchPokemon(keyword)
-      .then((data) => {
-        console.log("¡Pokémon encontrado desde la API!", data);
-        setPokemonData(data);
-        // Eliminamos el navigate de aquí, ya viajamos antes
-      })
-      .catch((err) => {
-        console.error(err);
+    try {
+      // Consumimos el lote de 100 elementos usando tu clase pokeApi
+      const data = await pokeApi.getInitialPokemons(100);
+
+      // Filtramos las coincidencias que contengan la palabra clave
+      const filteredResults = data.results.filter((p) =>
+        p.name.includes(cleanKeyword),
+      );
+
+      if (filteredResults.length === 0) {
         setSearchError("No se ha encontrado nada");
-        // Eliminamos el navigate de aquí también
-      })
-      .finally(() => {
+        localStorage.removeItem("pokemonSearchResults");
         setIsLoading(false);
-      });
+        return;
+      }
+
+      // Resolvemos el detalle de cada Pokémon en paralelo de manera segura
+      const detailedPromises = filteredResults.map((p) =>
+        fetch(p.url).then((res) => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        }),
+      );
+
+      const detailedPokemon = await Promise.all(detailedPromises);
+
+      setPokemonList(detailedPokemon);
+      localStorage.setItem(
+        "pokemonSearchResults",
+        JSON.stringify(detailedPokemon),
+      );
+    } catch (err) {
+      console.error(err);
+      // Mensaje de error largo oficial exigido por la lista de comprobación de TripleTen
+      setSearchError(
+        "Lo sentimos, algo ha salido mal durante la solicitud. Es posible que haya un problema de conexión o que el servidor no funcione. Por favor, inténtalo más tarde.",
+      );
+      localStorage.removeItem("pokemonSearchResults");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleShowMore = () => {
+    setVisibleCount((prevCount) => prevCount + 3);
   };
 
   return (
@@ -55,11 +97,9 @@ function App() {
       <Header onLoginClick={handleOpenPopup} />
 
       <Routes>
-        {/* Pasamos la función al Main */}
         <Route path="/" element={<Main onSearch={handleSearchSubmit} />} />
 
-        {/* Ruta para mostrar los datos devueltos */}
-        {/* Ruta personalizada para mostrar los datos de la PokéAPI */}
+        {/* CORRECCIÓN: Colocamos el operador '=' exacto para evitar pantallas rojas */}
         <Route
           path="/dashboard"
           element={
@@ -69,23 +109,55 @@ function App() {
                   Resultados de la Liga Pokémon
                 </h2>
 
-                {/* 1. Estado de carga activa el Preloader */}
+                {/* 1. Preloader de carga */}
                 {isLoading && <Preloader />}
 
-                {/* 2. Si la API tira error, se monta tu componente con el SVG triste */}
-                {!isLoading && searchError && <NotFound />}
+                {/* 2. No se encontró nada */}
+                {!isLoading && searchError === "No se ha encontrado nada" && (
+                  <NotFound />
+                )}
 
-                {/* 3. Si todo sale bien, se renderiza la tarjeta en el Grid */}
-                {!isLoading && pokemonData && (
+                {/* 3. Mensaje oficial de error de la API */}
+                {!isLoading &&
+                  searchError &&
+                  searchError !== "No se ha encontrado nada" && (
+                    <p
+                      className="pokemon-dashboard__api-error"
+                      style={{
+                        color: "#ff2d55",
+                        textAlign: "center",
+                        maxWidth: "600px",
+                        margin: "40px auto",
+                        fontFamily: "Inter, sans-serif",
+                        lineHeight: "1.5",
+                      }}
+                    >
+                      {searchError}
+                    </p>
+                  )}
+
+                {/* 4. Bloque de resultados de tarjetas */}
+                {!isLoading && pokemonList.length > 0 && (
                   <div className="pokemon-dashboard__container">
                     <div className="pokemon-dashboard__grid">
-                      <PokemonCard pokemon={pokemonData} />
+                      {pokemonList.slice(0, visibleCount).map((pokemon) => (
+                        <PokemonCard key={pokemon.id} pokemon={pokemon} />
+                      ))}
                     </div>
+
+                    {/* Botón Mostrar más condicional */}
+                    {visibleCount < pokemonList.length && (
+                      <button
+                        className="pokemon-dashboard__more-button"
+                        onClick={handleShowMore}
+                      >
+                        Mostrar más
+                      </button>
+                    )}
                   </div>
                 )}
 
-                {/* 4. Estado neutro inicial */}
-                {!isLoading && !pokemonData && !searchError && (
+                {!isLoading && pokemonList.length === 0 && !searchError && (
                   <p className="pokemon-dashboard__placeholder">
                     Busca un Pokémon en la página de inicio para ver sus
                     estadísticas aquí...

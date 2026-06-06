@@ -5,18 +5,15 @@ function NotFound() {
   return (
     <section className="not-found">
       <div className="not-found__container">
-        {/* Contenedor del icono con tu nuevo SVG del Entrenador Pokémon */}
+        {/* Contenedor del icono con tu nuevo SVG del Entrenador Pokémon sin atributos fijos de 800px */}
         <div className="not-found__icon-container">
           <svg
             className="not-found__icon"
             width="120"
             height="120"
-            version="1.1"
-            id="Layer_1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
             viewBox="0 0 511.983 511.983"
-            xmlSpace="preserve"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
             <path
               style={{ fill: "#5D9CEC" }}

@@ -3,26 +3,23 @@ class PokeApi {
     this._baseUrl = baseUrl;
   }
 
-  // Método privado para manejar la respuesta del servidor y cumplir con la rúbrica de errores
+  // Controlador de respuestas nativo exigido por la rúbrica [cite: 45, 46]
   _checkResponse(res) {
     if (res.ok) {
-      return res.json();
+      return res.json(); // [cite: 46]
     }
-    // Si el Pokémon no existe o hay error de conexión, rechazamos la promesa
     return Promise.reject(`Error: ${res.status}`);
   }
 
-  // 1. Búsqueda directa (Equivalente a buscar una noticia por palabra clave)
+  // 1. Búsqueda individual original (Mantiene tu lógica limpia)
   searchPokemon(keyword) {
-    // La API requiere que los nombres estén en minúsculas y sin espacios
     const cleanKeyword = keyword.toLowerCase().trim();
     return fetch(`${this._baseUrl}/pokemon/${cleanKeyword}`).then(
       this._checkResponse,
     );
   }
 
-  // 2. Obtener un lote para llenar el grid (Equivalente al from/to y pageSize de NewsAPI)
-  // Traemos un lote inicial para que el botón "Mostrar más" tenga de dónde paginar
+  // 2. Método de lote para resolver el Grid de 3 columnas (Exigido por la Etapa 1.2)
   getInitialPokemons(limit = 100) {
     return fetch(`${this._baseUrl}/pokemon?limit=${limit}`).then(
       this._checkResponse,
@@ -30,7 +27,6 @@ class PokeApi {
   }
 }
 
-// Instanciamos la clase con la URL base oficial
 const pokeApi = new PokeApi({
   baseUrl: "https://pokeapi.co/api/v2",
 });
