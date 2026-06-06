@@ -23,22 +23,25 @@
   transition-delay: 0s;
 }
 
+/* 1. Ajustamos el contenedor para que sea un poco más suave en sus esquinas */
 .popup__container {
   background-color: #ffffff;
   padding: 40px;
-  border-radius: 12px;
+  border-radius: 24px; /* Cambiado de 12px a 24px para dar la curva suave */
   position: relative;
   max-width: 430px;
   width: 90%; /* Responsivo para pantallas pequeñas */
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .popup__title {
   margin: 0 0 24px;
-  font-family: "Roboto Slab", "Georgia", serif;
+  font-family:
+    "Inter", "Arial", sans-serif; /* Cambiado a Inter para seguir la tipografía del proyecto */
   font-size: 24px;
   font-weight: 700;
   color: #000000;
+  text-align: left; /* Alineación limpia al inicio del formulario */
 }
 
 .popup__form {
@@ -46,38 +49,41 @@
   flex-direction: column;
 }
 
-/* Campos de entrada idénticos al Figma: fondo claro, bordes sutiles */
+/* 2. Transformamos el input rectangular gris en la píldora ovalada blanca con borde sutil */
 .popup__input {
-  background-color: #f4f4f4;
-  border: 1px solid #e5e5e5;
+  background-color: #ffffff; /* Cambiado de #f4f4f4 a blanco limpio */
+  border: 1px solid #dbdbdb; /* Borde perimetral completo y tenue */
   color: #000000;
-  padding: 14px 16px;
-  border-radius: 8px;
+  padding: 14px 24px; /* Padding interno amplio para albergar la curva */
+  border-radius: 100px; /* Óvalo perfecto idéntico al asset text input.png */
   font-size: 14px;
   margin-bottom: 16px;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .popup__input:focus {
   border-color: #2f80ed;
-  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.15); /* Enfoque sutil azul */
 }
 
 .popup__input::placeholder {
   color: #a0a0a0;
 }
 
-/* Botón de envío del formulario */
+/* 3. Estilizado del botón de envío al formato de píldora con sombra */
 .popup__submit {
   background-color: #2f80ed;
   color: #ffffff;
   border: none;
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 16px;
+  border-radius: 100px; /* Óvalo perfecto basado en tu asset button.png */
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0px 4px 12px rgba(47, 128, 237, 0.3); /* Sombra paralela del UI Kit */
   transition: background-color 0.2s ease;
 }
 
