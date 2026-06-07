@@ -19,35 +19,50 @@ function PokemonCard({ pokemon }) {
 
   return (
     <article className="pokemon-card">
-      {/* CONTENEDOR FLEX: Agrupa las etiquetas para que se alineen horizontalmente */}
-      <div className="pokemon-card__types-container">
-        {pokemon.types?.map((item, index) => {
-          const typeName = item.type.name.toLowerCase();
-          return (
-            <span
-              key={index}
-              className={`pokemon-card__type pokemon-card__type_type_${typeName}`}
-            >
-              {item.type.name.toUpperCase()}
-            </span>
-          );
-        })}
-      </div>
-
       <div className="pokemon-card__image-wrapper">
-        <img src={imageUrl} alt={pokemonName} className="pokemon-card__image" />
+        <img
+          src={
+            pokemon.sprites.other["official-artwork"].front_default ||
+            pokemon.sprites.front_default
+          }
+          alt={pokemon.name}
+          className="pokemon-card__image"
+        />
       </div>
 
       <div className="pokemon-card__content">
-        <span className="pokemon-card__id">
-          Pokédex #{String(pokemon.id).padStart(3, "0")}
-        </span>
+        <span className="pokemon-card__id">Pokédex #{pokemon.id}</span>
 
-        <h3 className="pokemon-card__name">{pokemonName}</h3>
+        {/* Tipos ahora renderizados abajo de forma segura */}
+        <div className="pokemon-card__types-container">
+          {pokemon.types.map((t) => (
+            <span
+              key={t.type.name}
+              className={`pokemon-card__type pokemon-card__type_type_${t.type.name}`}
+            >
+              {t.type.name.toUpperCase()}
+            </span>
+          ))}
+        </div>
 
-        <p className="pokemon-card__description">
-          <strong>Habilidades:</strong> {abilities || "Ninguna"}
-        </p>
+        <h3 className="pokemon-card__name">
+          {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+        </h3>
+
+        {/* Bloque de habilidades estilizado */}
+        <div className="pokemon-card__abilities-container">
+          <span className="pokemon-card__abilities-title">Habilidades:</span>
+          <div className="pokemon-card__abilities-list">
+            {pokemon.abilities.map((a) => (
+              <span
+                key={a.ability.name}
+                className="pokemon-card__ability-badge"
+              >
+                {a.ability.name.replace("-", " ")}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </article>
   );

@@ -18,29 +18,59 @@
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-/* Contenedor absoluto en la esquina superior izquierda */
-.pokemon-card__types-container {
-  position: absolute;
-  top: 16px;
-  left: 16px;
+/* Contenedor de la imagen (¡Ahora las ilustraciones respiran libres!) */
+.pokemon-card__image-wrapper {
+  background-color: #f8f9fa;
+  padding: 24px;
   display: flex;
-  gap: 6px; /* Separación horizontal limpia entre etiquetas */
-  z-index: 2;
+  justify-content: center;
+  align-items: center;
+  height: 220px;
+  box-sizing: border-box;
 }
 
-/* Estilo base de cada etiqueta */
+.pokemon-card__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Bloque inferior de textos */
+.pokemon-card__content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.pokemon-card__id {
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: 13px;
+  color: #a0a0a0;
+  margin-bottom: 6px;
+}
+
+/* Contenedor de tipos reubicado abajo (Separación limpia) */
+.pokemon-card__types-container {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+/* Estilo base de cada etiqueta (Mantenemos tus estilos redondeados premium) */
 .pokemon-card__type {
   padding: 6px 14px;
   border-radius: 100px;
   font-family: "Inter", "Arial", sans-serif;
   font-size: 11px;
   font-weight: 700;
-  color: #ffffff; /* Texto blanco para resaltar sobre el fondo de color */
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* --- PALETA DE COLORES OFICIALES POKÉMON --- */
+/* --- PALETA DE COLORES OFICIALES POKÉMON (Manteniendo tu estructura exacta) --- */
 .pokemon-card__type_type_normal {
   background-color: #a8a878;
 }
@@ -57,7 +87,7 @@
   background-color: #f8d030;
   color: #000000;
   text-shadow: none;
-} /* Texto oscuro para visibilidad */
+}
 .pokemon-card__type_type_ice {
   background-color: #98d8d8;
   color: #000000;
@@ -102,51 +132,46 @@
   background-color: #f0b6bc;
 }
 
-/* Contenedor de la imagen */
-.pokemon-card__image-wrapper {
-  background-color: #f8f9fa;
-  padding: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 220px;
-  box-sizing: border-box;
-}
-
-.pokemon-card__image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-/* Bloque inferior de textos */
-.pokemon-card__content {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  text-align: left;
-}
-
-.pokemon-card__id {
-  font-family: "Inter", "Arial", sans-serif;
-  font-size: 13px;
-  color: #a0a0a0;
-  margin-bottom: 6px;
-}
-
 .pokemon-card__name {
   font-family: "Inter", "Arial", sans-serif;
   font-size: 22px;
   font-weight: 700;
   color: #000000;
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0;
 }
 
-.pokemon-card__description {
+/* --- NUEVO REDISEÑO DE HABILIDADES (Estilo Píldoras de Datos) --- */
+.pokemon-card__abilities-container {
+  margin-top: auto; /* Empuja las habilidades al fondo de la tarjeta de forma simétrica */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid #f0f0f2;
+  padding-top: 12px;
+}
+
+.pokemon-card__abilities-title {
   font-family: "Inter", "Arial", sans-serif;
-  font-size: 14px;
-  color: #4a4a4a;
-  line-height: 1.5;
-  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8e8e93;
+}
+
+.pokemon-card__abilities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pokemon-card__ability-badge {
+  font-family: "Inter", "Arial", sans-serif;
+  background-color: #f5f5f7;
+  color: #1d1d1f;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: 1px solid #e3e3e8;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
