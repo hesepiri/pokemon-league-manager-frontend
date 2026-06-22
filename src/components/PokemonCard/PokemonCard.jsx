@@ -1,66 +1,141 @@
 import React from "react";
 import "./PokemonCard.css";
 
-function PokemonCard({ pokemon }) {
-  // Ponemos la primera letra en mayúscula para que se vea estético
-  const pokemonName =
-    pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+function PokemonCard({
+  pokemon,
+  isLoggedIn,
+  isSavedPage,
+  onSavePokemon,
+  onDeletePokemon,
+  savedPokemons = [],
+}) {
+  // 1. Detectamos si el objeto proviene de la DB (tiene _id) o de la PokéAPI (tiene id)
+  const isFromDb = !!pokemon._id;
 
-  // Extraemos la ilustración oficial de alta resolución
-  const imageUrl = pokemon.sprites?.other?.["official-artwork"]?.front_default;
+  // 2. Normalizamos los datos dependiendo del origen
+  const title = isFromDb
+    ? pokemon.title
+    : pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
 
-  // Mapeamos las habilidades separadas por comas
-  const abilities = pokemon.abilities
-    ?.map(
-      (item) =>
-        item.ability.name.charAt(0).toUpperCase() + item.ability.name.slice(1),
-    )
-    .join(", ");
+  const image = isFromDb
+    ? pokemon.image
+    : pokemon.sprites?.other?.["official-artwork"]?.front_default ||
+      pokemon.sprites?.front_default;
+
+  const keyword = isFromDb
+    ? pokemon.keyword
+    : pokemon.types?.[0]?.type?.name || "normal";
+
+  const abilitiesText = isFromDb
+    ? pokemon.text
+    : pokemon.abilities
+        ?.map(
+          (item) =>
+            item.ability.name.charAt(0).toUpperCase() +
+            item.ability.name.slice(1),
+        )
+        .join(", ");
+
+  // Campos exclusivos para la BD local
+  const date = isFromDb ? pokemon.date : new Date().toLocaleDateString();
+  const source = isFromDb ? pokemon.source : "PokéAPI";
+  const link = isFromDb
+    ? pokemon.link
+    : `https://www.pokemon.com/es/pokedex/${pokemon.name}`;
+
+  // 3. Verificamos si este Pokémon ya fue guardado por el usuario actual
+  const savedInstance = savedPokemons.find(
+    (p) => p.title.toLowerCase() === title.toLowerCase(),
+  );
+  const isSaved = !!savedInstance;
+
+  // 4. Manejador del botón de guardado/eliminado
+  const handleIconClick = () => {
+    if (!isLoggedIn) return; // Si no hay sesión, el clic no hace nada (se muestra un tooltip por CSS)
+
+    if (isSavedPage || isFromDb) {
+      onDeletePokemon(pokemon._id);
+    } else if (isSaved) {
+      onDeletePokemon(savedInstance._id);
+    } else {
+      onSavePokemon({
+        keyword,
+        title,
+        text: abilitiesText,
+        date,
+        source,
+        link,
+        image,
+      });
+    }
+  };
 
   return (
     <article className="pokemon-card">
+      {/* Etiqueta visible solo en la ruta protegida */}
+      {isSavedPage && (
+        <span className="pokemon-card__keyword-tag">
+          {keyword.toUpperCase()}
+        </span>
+      )}
+
       <div className="pokemon-card__image-wrapper">
-        <img
-          src={
-            pokemon.sprites.other["official-artwork"].front_default ||
-            pokemon.sprites.front_default
-          }
-          alt={pokemon.name}
-          className="pokemon-card__image"
-        />
+        <img src={image} alt={title} className="pokemon-card__image" />
+
+        {/* Botón de acción superpuesto a la imagen */}
+        <div className="pokemon-card__button-container">
+          {!isLoggedIn && (
+            <span className="pokemon-card__tooltip">
+              Inicia sesión para guardar
+            </span>
+          )}
+          <button
+            type="button"
+            className={`pokemon-card__action-button ${
+              isSavedPage
+                ? "pokemon-card__action-button_type_delete"
+                : isSaved
+                  ? "pokemon-card__action-button_type_marked"
+                  : "pokemon-card__action-button_type_save"
+            }`}
+            onClick={handleIconClick}
+          ></button>
+        </div>
       </div>
 
       <div className="pokemon-card__content">
-        <span className="pokemon-card__id">Pokédex #{pokemon.id}</span>
+        {!isFromDb && (
+          <span className="pokemon-card__id">Pokédex #{pokemon.id}</span>
+        )}
 
-        {/* Tipos ahora renderizados abajo de forma segura */}
         <div className="pokemon-card__types-container">
-          {pokemon.types.map((t) => (
+          {/* Si es de DB mostramos el keyword único, si es de API mapeamos todos los tipos */}
+          {isFromDb ? (
             <span
-              key={t.type.name}
-              className={`pokemon-card__type pokemon-card__type_type_${t.type.name}`}
+              className={`pokemon-card__type pokemon-card__type_type_${keyword.toLowerCase()}`}
             >
-              {t.type.name.toUpperCase()}
+              {keyword.toUpperCase()}
             </span>
-          ))}
+          ) : (
+            pokemon.types?.map((t) => (
+              <span
+                key={t.type.name}
+                className={`pokemon-card__type pokemon-card__type_type_${t.type.name}`}
+              >
+                {t.type.name.toUpperCase()}
+              </span>
+            ))
+          )}
         </div>
 
-        <h3 className="pokemon-card__name">
-          {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
-        </h3>
+        <h3 className="pokemon-card__name">{title}</h3>
 
-        {/* Bloque de habilidades estilizado */}
         <div className="pokemon-card__abilities-container">
           <span className="pokemon-card__abilities-title">Habilidades:</span>
           <div className="pokemon-card__abilities-list">
-            {pokemon.abilities.map((a) => (
-              <span
-                key={a.ability.name}
-                className="pokemon-card__ability-badge"
-              >
-                {a.ability.name.replace("-", " ")}
-              </span>
-            ))}
+            <span className="pokemon-card__ability-badge">
+              {abilitiesText.replace(/-/g, " ")}
+            </span>
           </div>
         </div>
       </div>

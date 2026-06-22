@@ -34,3 +34,8 @@
     font-size: 18px;
   }
 }
+
+/* --- ESTILOS ETAPA 3: TEMA CLARO (Ruta Protegida) --- */
+.header_theme_light {
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05); /* Sombra para diferenciar la vista de guardados */
+}
