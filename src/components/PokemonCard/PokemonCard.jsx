@@ -22,9 +22,10 @@ function PokemonCard({
     : pokemon.sprites?.other?.["official-artwork"]?.front_default ||
       pokemon.sprites?.front_default;
 
+  // AQUI EL CAMBIO CLAVE: Si es de API unimos todos los tipos separados por coma y espacio
   const keyword = isFromDb
     ? pokemon.keyword
-    : pokemon.types?.[0]?.type?.name || "normal";
+    : pokemon.types?.map((t) => t.type.name).join(", ") || "normal";
 
   const abilitiesText = isFromDb
     ? pokemon.text
@@ -72,10 +73,10 @@ function PokemonCard({
 
   return (
     <article className="pokemon-card">
-      {/* Etiqueta visible solo en la ruta protegida */}
+      {/* Etiqueta visible solo en la ruta protegida. Solo mostramos el primer tipo para el diseño */}
       {isSavedPage && (
         <span className="pokemon-card__keyword-tag">
-          {keyword.toUpperCase()}
+          {keyword.split(", ")[0].toUpperCase()}
         </span>
       )}
 
@@ -109,23 +110,24 @@ function PokemonCard({
         )}
 
         <div className="pokemon-card__types-container">
-          {/* Si es de DB mostramos el keyword único, si es de API mapeamos todos los tipos */}
-          {isFromDb ? (
-            <span
-              className={`pokemon-card__type pokemon-card__type_type_${keyword.toLowerCase()}`}
-            >
-              {keyword.toUpperCase()}
-            </span>
-          ) : (
-            pokemon.types?.map((t) => (
-              <span
-                key={t.type.name}
-                className={`pokemon-card__type pokemon-card__type_type_${t.type.name}`}
-              >
-                {t.type.name.toUpperCase()}
-              </span>
-            ))
-          )}
+          {/* Si es de DB dividimos el string para generar los spans, si es de API mapeamos el arreglo */}
+          {isFromDb
+            ? keyword.split(", ").map((type) => (
+                <span
+                  key={type}
+                  className={`pokemon-card__type pokemon-card__type_type_${type.toLowerCase().trim()}`}
+                >
+                  {type.toUpperCase().trim()}
+                </span>
+              ))
+            : pokemon.types?.map((t) => (
+                <span
+                  key={t.type.name}
+                  className={`pokemon-card__type pokemon-card__type_type_${t.type.name}`}
+                >
+                  {t.type.name.toUpperCase()}
+                </span>
+              ))}
         </div>
 
         <h3 className="pokemon-card__name">{title}</h3>
