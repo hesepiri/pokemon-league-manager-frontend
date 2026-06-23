@@ -111,5 +111,4 @@ El flujo de comunicación entre el frontend y el backend se realiza mediante pet
 
 Siguiendo las sugerencias de optimización para mejorar la legibilidad y el mantenimiento a largo plazo:
 
-- La lógica de autenticación se centraliza en el componente principal `App.jsx` mediante el uso de contextos (`CurrentUserContext`).
 - Se utiliza un componente de orden superior (`ProtectedRoute`) para envolver las rutas que requieren privacidad, aislando la lógica de redirección de los componentes de vista.
