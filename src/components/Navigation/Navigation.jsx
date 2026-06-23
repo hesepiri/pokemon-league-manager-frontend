@@ -1,8 +1,12 @@
-import React from "react";
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import "./Navigation.css";
 
-function Navigation({ isLoggedIn, onLoginClick, onSignOut, currentUser }) {
+function Navigation({ isLoggedIn, onLoginClick, onSignOut }) {
+  // Consumimos el contexto global directamente aquí
+  const currentUser = useContext(CurrentUserContext);
+
   return (
     <nav className="navigation">
       <ul className="navigation__list">
@@ -18,7 +22,7 @@ function Navigation({ isLoggedIn, onLoginClick, onSignOut, currentUser }) {
           </NavLink>
         </li>
 
-        {/* Enlace público original de tu proyecto (Opcional, puedes quitarlo si no lo necesitas en el header) */}
+        {/* Enlace público original */}
         <li className="navigation__item">
           <NavLink
             to="/dashboard"
@@ -55,7 +59,6 @@ function Navigation({ isLoggedIn, onLoginClick, onSignOut, currentUser }) {
               <span className="navigation__user-name">
                 {currentUser?.name || "Entrenador"}
               </span>
-              {/* Ícono de logout (puedes agregar un SVG o manejarlo por CSS background) */}
               <span className="navigation__logout-icon"></span>
             </button>
           ) : (

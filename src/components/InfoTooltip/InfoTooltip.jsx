@@ -1,5 +1,3 @@
-import React from "react";
-
 function InfoTooltip({ isOpen, onClose, onSwitchToLogin }) {
   if (!isOpen) return null;
 

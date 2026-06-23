@@ -1,4 +1,3 @@
-import React from "react";
 import "./About.css";
 // Puedes usar una imagen tuya que tengas en assets o un avatar por defecto temporal
 import avatarImg from "../../images/hector_github.png";

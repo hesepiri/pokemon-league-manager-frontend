@@ -1,11 +1,8 @@
-import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Navigation from "../Navigation/Navigation";
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import "./Header.css";
 
 function Header({ isLoggedIn, onLoginClick, onSignOut }) {
-  const currentUser = useContext(CurrentUserContext);
   const location = useLocation();
   const isSavedRoute = location.pathname === "/saved-pokemons";
 
@@ -21,12 +18,11 @@ function Header({ isLoggedIn, onLoginClick, onSignOut }) {
           Pokémon League Manager
         </Link>
 
-        {/* Pasamos las propiedades y el contexto al componente de navegación */}
+        {/* Quitamos la prop currentUser. Ahora Navigation la consumirá del Contexto directamente */}
         <Navigation
           isLoggedIn={isLoggedIn}
           onLoginClick={onLoginClick}
           onSignOut={onSignOut}
-          currentUser={currentUser}
           isSavedRoute={isSavedRoute}
         />
       </div>

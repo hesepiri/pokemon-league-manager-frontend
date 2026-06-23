@@ -1,4 +1,3 @@
-import React from "react";
 import "./Footer.css";
 
 // Importamos tus archivos SVG desde tu carpeta de imágenes

@@ -1,4 +1,3 @@
-import React from "react";
 import "./PokemonCard.css";
 
 function PokemonCard({
@@ -8,6 +7,7 @@ function PokemonCard({
   onSavePokemon,
   onDeletePokemon,
   savedPokemons = [],
+  onUnauthorizedClick,
 }) {
   // 1. Detectamos si el objeto proviene de la DB (tiene _id) o de la PokéAPI (tiene id)
   const isFromDb = !!pokemon._id;
@@ -22,22 +22,26 @@ function PokemonCard({
     : pokemon.sprites?.other?.["official-artwork"]?.front_default ||
       pokemon.sprites?.front_default;
 
-  // AQUI EL CAMBIO CLAVE: Si es de API unimos todos los tipos separados por coma y espacio
+  // SOLUCIÓN DEFINITIVA: Guardamos todos los tipos separados por comas para mantener la consistencia visual
   const keyword = isFromDb
     ? pokemon.keyword
     : pokemon.types?.map((t) => t.type.name).join(", ") || "normal";
 
+  // Mantenemos el blindaje contra strings vacíos en el campo obligatorio 'text'
+  const rawAbilities = pokemon.abilities
+    ?.map(
+      (item) =>
+        item.ability.name.charAt(0).toUpperCase() + item.ability.name.slice(1),
+    )
+    .join(", ");
+
   const abilitiesText = isFromDb
     ? pokemon.text
-    : pokemon.abilities
-        ?.map(
-          (item) =>
-            item.ability.name.charAt(0).toUpperCase() +
-            item.ability.name.slice(1),
-        )
-        .join(", ");
+    : rawAbilities && rawAbilities.trim() !== ""
+      ? rawAbilities
+      : "Sin descripción disponible";
 
-  // Campos exclusivos para la BD local
+  // Campos opcionales / metadatos
   const date = isFromDb ? pokemon.date : new Date().toLocaleDateString();
   const source = isFromDb ? pokemon.source : "PokéAPI";
   const link = isFromDb
@@ -52,7 +56,10 @@ function PokemonCard({
 
   // 4. Manejador del botón de guardado/eliminado
   const handleIconClick = () => {
-    if (!isLoggedIn) return; // Si no hay sesión, el clic no hace nada (se muestra un tooltip por CSS)
+    if (!isLoggedIn) {
+      if (onUnauthorizedClick) onUnauthorizedClick();
+      return;
+    }
 
     if (isSavedPage || isFromDb) {
       onDeletePokemon(pokemon._id);
@@ -60,7 +67,7 @@ function PokemonCard({
       onDeletePokemon(savedInstance._id);
     } else {
       onSavePokemon({
-        keyword,
+        keyword, // Ahora enviará "fighting, steel" correctamente
         title,
         text: abilitiesText,
         date,
@@ -73,7 +80,7 @@ function PokemonCard({
 
   return (
     <article className="pokemon-card">
-      {/* Etiqueta visible solo en la ruta protegida. Solo mostramos el primer tipo para el diseño */}
+      {/* Etiqueta superior izquierda: toma el primer tipo del string de la DB */}
       {isSavedPage && (
         <span className="pokemon-card__keyword-tag">
           {keyword.split(", ")[0].toUpperCase()}
@@ -109,8 +116,8 @@ function PokemonCard({
           <span className="pokemon-card__id">Pokédex #{pokemon.id}</span>
         )}
 
+        {/* Renderiza todas las etiquetas de tipo mapeando el string con comas */}
         <div className="pokemon-card__types-container">
-          {/* Si es de DB dividimos el string para generar los spans, si es de API mapeamos el arreglo */}
           {isFromDb
             ? keyword.split(", ").map((type) => (
                 <span

@@ -18,14 +18,13 @@ import * as mainApi from "../../utils/MainApi";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import Login from "../Login/Login";
 import Register from "../Register/Register";
-import InfoTooltip from "../InfoTooltip/InfoTooltip"; // <-- Importación añadida
+import InfoTooltip from "../InfoTooltip/InfoTooltip";
 import SavedPokemons from "../SavedPokemons/SavedPokemons";
 
 function App() {
   // Estados de Búsqueda
   const [isLoading, setIsLoading] = useState(false);
   const [searchError, setSearchError] = useState("");
-  const [pokemonList, setPokemonList] = useState([]);
   const [visibleCount, setVisibleCount] = useState(3);
 
   // Estados de Autenticación
@@ -36,19 +35,18 @@ function App() {
   // Estados de Modales
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState(false);
-  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false); // <-- Estado añadido
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [apiError, setApiError] = useState("");
 
   const navigate = useNavigate();
 
-  // Efectos
-  useEffect(() => {
+  // Inicialización directa del estado leyendo de localStorage (Evita doble renderizado)
+  const [pokemonList, setPokemonList] = useState(() => {
     const savedPokemon = localStorage.getItem("pokemonSearchResults");
-    if (savedPokemon) {
-      setPokemonList(JSON.parse(savedPokemon));
-    }
-  }, []);
+    return savedPokemon ? JSON.parse(savedPokemon) : [];
+  });
 
+  // Efecto del Token: Ejecución única al montar [] para persistencia de sesión
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
@@ -69,7 +67,7 @@ function App() {
           localStorage.removeItem("jwt");
         });
     }
-  }, [isLoggedIn]);
+  }, []);
 
   // Manejadores de Modales
   const handleOpenLogin = () => {
@@ -88,7 +86,7 @@ function App() {
   const handleClosePopups = () => {
     setIsLoginPopupOpen(false);
     setIsRegisterPopupOpen(false);
-    setIsInfoTooltipOpen(false); // <-- Cierre añadido
+    setIsInfoTooltipOpen(false);
     setApiError("");
   };
 
@@ -99,7 +97,8 @@ function App() {
       .then((res) => {
         if (res) {
           setIsRegisterPopupOpen(false);
-          setIsInfoTooltipOpen(true); // <-- Abre modal de éxito
+          setIsInfoTooltipOpen(true);
+          handleLogin(email, password);
         }
       })
       .catch((err) => {
@@ -117,6 +116,25 @@ function App() {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
           setIsLoggedIn(true);
+
+          mainApi
+            .checkToken(data.token)
+            .then((userRes) => {
+              if (userRes) setCurrentUser(userRes);
+            })
+            .catch((err) =>
+              console.error(`Error al recuperar datos post-login: ${err}`),
+            );
+
+          mainApi
+            .getSavedPokemons(data.token)
+            .then((pokemons) => {
+              if (pokemons) setSavedPokemons(pokemons);
+            })
+            .catch((err) =>
+              console.error(`Error al cargar pokémones post-login: ${err}`),
+            );
+
           handleClosePopups();
           navigate("/");
         }
@@ -135,13 +153,21 @@ function App() {
     navigate("/");
   };
 
-  // Manejadores de Pokémon
+  // Manejadores de Pokémon con manejo de errores visuales
   const handleSavePokemon = (pokemonData) => {
     const jwt = localStorage.getItem("jwt");
+
+    console.log("Objeto enviado al backend:", pokemonData);
+
     mainApi
       .savePokemon(pokemonData, jwt)
       .then((newPokemon) => setSavedPokemons([newPokemon, ...savedPokemons]))
-      .catch((err) => console.error(`Error al guardar pokemon: ${err}`));
+      .catch((err) => {
+        console.error(`Error al guardar pokemon: ${err}`);
+        alert(
+          "Ocurrió un error al intentar guardar el Pokémon. Por favor intenta de nuevo.",
+        );
+      });
   };
 
   const handleDeletePokemon = (pokemonId) => {
@@ -151,7 +177,12 @@ function App() {
       .then(() =>
         setSavedPokemons((state) => state.filter((p) => p._id !== pokemonId)),
       )
-      .catch((err) => console.error(`Error al eliminar pokemon: ${err}`));
+      .catch((err) => {
+        console.error(`Error al eliminar pokemon: ${err}`);
+        alert(
+          "Ocurrió un error al intentar eliminar el Pokémon. Por favor intenta de nuevo.",
+        );
+      });
   };
 
   // Búsqueda API Externa
@@ -343,6 +374,7 @@ function App() {
                             onSavePokemon={handleSavePokemon}
                             onDeletePokemon={handleDeletePokemon}
                             savedPokemons={savedPokemons}
+                            onUnauthorizedClick={handleOpenRegister}
                           />
                         ))}
                       </div>
@@ -370,14 +402,12 @@ function App() {
             path="/saved-pokemons"
             element={
               <ProtectedRoute
+                component={SavedPokemons}
                 isLoggedIn={isLoggedIn}
                 onLoginClick={handleOpenLogin}
-              >
-                <SavedPokemons
-                  savedPokemons={savedPokemons}
-                  onDeletePokemon={handleDeletePokemon}
-                />
-              </ProtectedRoute>
+                savedPokemons={savedPokemons}
+                onDeletePokemon={handleDeletePokemon}
+              />
             }
           />
           <Route path="*" element={<Navigate to="/" />} />
@@ -402,7 +432,6 @@ function App() {
           apiError={apiError}
         />
 
-        {/* --- MODAL DE ÉXITO AÑADIDO --- */}
         <InfoTooltip
           isOpen={isInfoTooltipOpen}
           onClose={handleClosePopups}

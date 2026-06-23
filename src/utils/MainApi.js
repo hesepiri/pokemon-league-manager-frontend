@@ -1,4 +1,4 @@
-export const BASE_URL = "https://api.pkmnleaguemngr-hspr.mooo.com";
+import { BASE_URL } from "./constants";
 
 const checkResponse = (res) => {
   if (res.ok) {

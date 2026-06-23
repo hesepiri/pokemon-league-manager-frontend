@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import PokemonCard from "../PokemonCard/PokemonCard";
 
@@ -16,12 +16,11 @@ function SavedPokemons({ savedPokemons, onDeletePokemon }) {
     (a, b) => keywordCounts[b] - keywordCounts[a],
   );
 
-  let keywordsText = "";
-  if (sortedKeywords.length <= 3) {
-    keywordsText = sortedKeywords.join(", ");
-  } else {
-    keywordsText = `${sortedKeywords[0]}, ${sortedKeywords[1]} y ${sortedKeywords.length - 2} más`;
-  }
+  // Declaración directa corregida para que el linter la detecte en uso
+  const keywordsText =
+    sortedKeywords.length <= 3
+      ? sortedKeywords.join(", ")
+      : `${sortedKeywords[0]}, ${sortedKeywords[1]} y ${sortedKeywords.length - 2} más`;
 
   return (
     <main className="saved-pokemons">
