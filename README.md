@@ -14,6 +14,29 @@ Esta fase del proyecto se enfoca en asegurar la aplicación **Liga Pokémon** me
 
 ---
 
+## 🚀 Infraestructura y Entrega
+
+El proyecto ha sido verificado y cumple con los estándares de calidad del linter y compilación.
+
+| Requisito               | Estado | Notas                                             |
+| :---------------------- | :----- | :------------------------------------------------ |
+| **Build sin errores**   | Sí     | `npm run build` ejecutable y exitoso.             |
+| **Lint sin errores**    | Sí     | 0 errores mediante ESLint (`npm run lint`).       |
+| **Despliegue Frontend** | Sí     | Desplegado y operativo en ambiente de producción. |
+
+### 🔗 Enlaces del Proyecto
+
+- **Despliegue en producción (Frontend):** [https://pkmnleaguemngr-hspr.mooo.com](https://pkmnleaguemngr-hspr.mooo.com) _(Nota: Modifica este enlace si tu frontend está en otra URL de mooo.com o GitHub Pages)_
+- **Repositorio de GitHub:** [https://github.com/hesepiri/pokemon-league-manager-frontend](https://github.com/hesepiri/pokemon-league-manager-frontend)
+
+### 🛠️ Comandos Disponibles
+
+- `npm run dev`: Inicia el servidor de desarrollo local.
+- `npm run build`: Compila la aplicación para producción en la carpeta `dist`.
+- `npm run lint`: Ejecuta el analizador de código ESLint para asegurar la calidad del código.
+
+---
+
 ## ⚙️ Configuración del Entorno (`.env.example`)
 
 Para que el ecosistema completo (frontend y backend) funcione de manera correcta en esta fase, asegúrate de configurar las siguientes variables de entorno en el servidor:
