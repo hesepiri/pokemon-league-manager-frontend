@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import PokemonCard from "../PokemonCard/PokemonCard";
+import "./SavedPokemons.css";
 
 function SavedPokemons({ savedPokemons, onDeletePokemon }) {
   const currentUser = useContext(CurrentUserContext);
