@@ -43,7 +43,7 @@
   border: 2px solid #2f80ed;
   color: #2f80ed;
   padding: 10px 24px;
-  border-radius: 100px; /* Al igual que el buscador, un valor alto lo hace completamente ovalado y suave */
+  border-radius: 100px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -56,6 +56,42 @@
 .navigation__button:hover {
   background-color: #2f80ed;
   color: #ffffff;
+}
+
+/* --- ESTILOS ETAPA 3: AUTENTICACIÓN Y LOGOUT --- */
+.navigation__auth-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Modificador para el botón cuando hay sesión iniciada */
+.navigation__button_type_logout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 20px;
+}
+
+.navigation__user-name {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ícono de logout renderizado por CSS */
+.navigation__logout-icon {
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 17L21 12L16 7' stroke='%232F80ED' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M21 12H9' stroke='%232F80ED' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9' stroke='%232F80ED' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: filter 0.2s ease;
+}
+
+/* Cuando se hace hover al botón, invertimos el color del ícono a blanco */
+.navigation__button_type_logout:hover .navigation__logout-icon {
+  filter: brightness(0) invert(1);
 }
 
 @media screen and (max-width: 768px) {

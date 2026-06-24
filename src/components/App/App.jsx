@@ -1,56 +1,202 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import "./App.css";
+
+// Componentes estructurales
 import Header from "../Header/Header";
 import Main from "../Main/Main";
 import About from "../About/About";
 import Footer from "../Footer/Footer";
-import PopupWithForm from "../PopupWithForm/PopupWithForm";
 import Preloader from "../Preloader/Preloader";
 import PokemonCard from "../PokemonCard/PokemonCard";
 import NotFound from "../NotFound/NotFound";
 import pokeApi from "../../utils/pokeApi";
 
+// Componentes Etapa 3
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import * as mainApi from "../../utils/MainApi";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import Login from "../Login/Login";
+import Register from "../Register/Register";
+import InfoTooltip from "../InfoTooltip/InfoTooltip";
+import SavedPokemons from "../SavedPokemons/SavedPokemons";
+
 function App() {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  // Estados de Búsqueda
   const [isLoading, setIsLoading] = useState(false);
   const [searchError, setSearchError] = useState("");
-
-  // Controladores de estado para el lote de 3 en 3 (Rúbrica Etapa 1.2)
-  const [pokemonList, setPokemonList] = useState([]);
   const [visibleCount, setVisibleCount] = useState(3);
+
+  // Estados de Autenticación
+  const [currentUser, setCurrentUser] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [savedPokemons, setSavedPokemons] = useState([]);
+
+  // Estados de Modales
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [apiError, setApiError] = useState("");
 
   const navigate = useNavigate();
 
-  // Leer datos guardados en LocalStorage al montar el componente (Obligatorio)
-  useEffect(() => {
+  // Inicialización directa del estado leyendo de localStorage (Evita doble renderizado)
+  const [pokemonList, setPokemonList] = useState(() => {
     const savedPokemon = localStorage.getItem("pokemonSearchResults");
-    if (savedPokemon) {
-      setPokemonList(JSON.parse(savedPokemon));
+    return savedPokemon ? JSON.parse(savedPokemon) : [];
+  });
+
+  // Efecto del Token: Ejecución única al montar [] para persistencia de sesión
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      mainApi
+        .checkToken(jwt)
+        .then((res) => {
+          if (res) {
+            setCurrentUser(res);
+            setIsLoggedIn(true);
+            return mainApi.getSavedPokemons(jwt);
+          }
+        })
+        .then((pokemons) => {
+          if (pokemons) setSavedPokemons(pokemons);
+        })
+        .catch((err) => {
+          console.error(`Error al validar token: ${err}`);
+          localStorage.removeItem("jwt");
+        });
     }
   }, []);
 
-  const handleOpenPopup = () => setIsPopupOpen(true);
-  const handleClosePopup = () => setIsPopupOpen(false);
+  // Manejadores de Modales
+  const handleOpenLogin = () => {
+    setApiError("");
+    setIsLoginPopupOpen(true);
+    setIsRegisterPopupOpen(false);
+    setIsInfoTooltipOpen(false);
+  };
 
-  // Manejador asíncrono bilingüe automatizado
-  // Manejador asíncrono bilingüe con soporte para búsquedas parciales
+  const handleOpenRegister = () => {
+    setApiError("");
+    setIsRegisterPopupOpen(true);
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleClosePopups = () => {
+    setIsLoginPopupOpen(false);
+    setIsRegisterPopupOpen(false);
+    setIsInfoTooltipOpen(false);
+    setApiError("");
+  };
+
+  // Manejadores de Autenticación
+  const handleRegister = (email, password, name) => {
+    mainApi
+      .register(email, password, name)
+      .then((res) => {
+        if (res) {
+          setIsRegisterPopupOpen(false);
+          setIsInfoTooltipOpen(true);
+          handleLogin(email, password);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setApiError(
+          "Este correo electrónico ya está en uso o los datos son inválidos.",
+        );
+      });
+  };
+
+  const handleLogin = (email, password) => {
+    mainApi
+      .login(email, password)
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+          setIsLoggedIn(true);
+
+          mainApi
+            .checkToken(data.token)
+            .then((userRes) => {
+              if (userRes) setCurrentUser(userRes);
+            })
+            .catch((err) =>
+              console.error(`Error al recuperar datos post-login: ${err}`),
+            );
+
+          mainApi
+            .getSavedPokemons(data.token)
+            .then((pokemons) => {
+              if (pokemons) setSavedPokemons(pokemons);
+            })
+            .catch((err) =>
+              console.error(`Error al cargar pokémones post-login: ${err}`),
+            );
+
+          handleClosePopups();
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setApiError("Correo electrónico o contraseña incorrectos.");
+      });
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem("jwt");
+    setIsLoggedIn(false);
+    setCurrentUser({});
+    setSavedPokemons([]);
+    navigate("/");
+  };
+
+  // Manejadores de Pokémon con manejo de errores visuales
+  const handleSavePokemon = (pokemonData) => {
+    const jwt = localStorage.getItem("jwt");
+
+    console.log("Objeto enviado al backend:", pokemonData);
+
+    mainApi
+      .savePokemon(pokemonData, jwt)
+      .then((newPokemon) => setSavedPokemons([newPokemon, ...savedPokemons]))
+      .catch((err) => {
+        console.error(`Error al guardar pokemon: ${err}`);
+        alert(
+          "Ocurrió un error al intentar guardar el Pokémon. Por favor intenta de nuevo.",
+        );
+      });
+  };
+
+  const handleDeletePokemon = (pokemonId) => {
+    const jwt = localStorage.getItem("jwt");
+    mainApi
+      .deletePokemon(pokemonId, jwt)
+      .then(() =>
+        setSavedPokemons((state) => state.filter((p) => p._id !== pokemonId)),
+      )
+      .catch((err) => {
+        console.error(`Error al eliminar pokemon: ${err}`);
+        alert(
+          "Ocurrió un error al intentar eliminar el Pokémon. Por favor intenta de nuevo.",
+        );
+      });
+  };
+
+  // Búsqueda API Externa
   const handleSearchSubmit = async (keyword) => {
     const cleanKeyword = keyword.trim().toLowerCase();
     if (!cleanKeyword) return;
-
     setIsLoading(true);
     setSearchError("");
     setPokemonList([]);
     setVisibleCount(3);
-
     navigate("/dashboard");
 
     try {
-      // 1. Traemos el catálogo completo de la PokéAPI (en inglés)
       const data = await pokeApi.getInitialPokemons(1400);
-
-      // 2. Diccionario de equivalencias oficiales
       const spanishOverrides = {
         aegislash: "aegislash-shield",
         basculegion: "basculegion-male",
@@ -144,20 +290,12 @@ function App() {
         "zygarde completo": "zygarde-complete",
       };
 
-      // 3. DETECTOR DE COINCIDENCIAS PARCIALES EN ESPAÑOL
-      // Creamos una lista de términos en inglés que queremos buscar en la API
       const searchTerms = [cleanKeyword];
-
-      // Iteramos el diccionario: si el usuario escribió una parte del nombre en español (ej. "ferro")
-      // añadimos el nombre en inglés correspondiente (ej. "iron-bundle", "iron-treads") a los términos de búsqueda
       Object.keys(spanishOverrides).forEach((spanishName) => {
-        if (spanishName.includes(cleanKeyword)) {
+        if (spanishName.includes(cleanKeyword))
           searchTerms.push(spanishOverrides[spanishName]);
-        }
       });
 
-      // 4. FILTRADO MULTI-TÉRMINO
-      // El Pokémon pasa el filtro si su nombre en inglés contiene CUALQUIERA de nuestros términos
       const filteredResults = data.results.filter((pokemon) =>
         searchTerms.some((term) => pokemon.name.includes(term)),
       );
@@ -169,7 +307,6 @@ function App() {
         return;
       }
 
-      // 5. Descarga de detalles en paralelo
       const detailedPromises = filteredResults.map((p) =>
         fetch(p.url).then((res) => {
           if (!res.ok) throw new Error();
@@ -178,7 +315,6 @@ function App() {
       );
 
       const detailedPokemon = await Promise.all(detailedPromises);
-
       setPokemonList(detailedPokemon);
       localStorage.setItem(
         "pokemonSearchResults",
@@ -186,101 +322,123 @@ function App() {
       );
     } catch (err) {
       console.error(err);
-      setSearchError(
-        "Lo sentimos, algo ha salido mal durante la solicitud. Es posible que haya un problema de conexión o que el servidor no funcione. Por favor, inténtalo más tarde.",
-      );
+      setSearchError("Lo sentimos, algo ha salido mal durante la solicitud.");
       localStorage.removeItem("pokemonSearchResults");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleShowMore = () => {
-    setVisibleCount((prevCount) => prevCount + 3);
-  };
+  const handleShowMore = () => setVisibleCount((prev) => prev + 3);
 
   return (
-    <div className="page">
-      <Header onLoginClick={handleOpenPopup} />
+    <CurrentUserContext.Provider value={currentUser}>
+      <div className="page">
+        <Header
+          isLoggedIn={isLoggedIn}
+          onLoginClick={handleOpenLogin}
+          onSignOut={handleSignOut}
+        />
 
-      <Routes>
-        <Route path="/" element={<Main onSearch={handleSearchSubmit} />} />
+        <Routes>
+          <Route path="/" element={<Main onSearch={handleSearchSubmit} />} />
 
-        {/* CORRECCIÓN: Colocamos el operador '=' exacto para evitar pantallas rojas */}
-        <Route
-          path="/dashboard"
-          element={
-            <main className="content">
-              <section className="pokemon-dashboard">
-                <h2 className="pokemon-dashboard__title">
-                  Resultados de la Liga Pokémon
-                </h2>
+          <Route
+            path="/dashboard"
+            element={
+              <main className="content">
+                <section className="pokemon-dashboard">
+                  <h2 className="pokemon-dashboard__title">
+                    Resultados de la Liga Pokémon
+                  </h2>
+                  {isLoading && <Preloader />}
+                  {!isLoading && searchError === "No se ha encontrado nada" && (
+                    <NotFound />
+                  )}
+                  {!isLoading &&
+                    searchError &&
+                    searchError !== "No se ha encontrado nada" && (
+                      <p className="pokemon-dashboard__api-error">
+                        {searchError}
+                      </p>
+                    )}
 
-                {/* 1. Preloader de carga */}
-                {isLoading && <Preloader />}
-
-                {/* 2. No se encontró nada */}
-                {!isLoading && searchError === "No se ha encontrado nada" && (
-                  <NotFound />
-                )}
-
-                {/* 3. Mensaje oficial de error de la API */}
-                {!isLoading &&
-                  searchError &&
-                  searchError !== "No se ha encontrado nada" && (
-                    <p
-                      className="pokemon-dashboard__api-error"
-                      style={{
-                        color: "#ff2d55",
-                        textAlign: "center",
-                        maxWidth: "600px",
-                        margin: "40px auto",
-                        fontFamily: "Inter, sans-serif",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      {searchError}
+                  {!isLoading && pokemonList.length > 0 && (
+                    <div className="pokemon-dashboard__container">
+                      <div className="pokemon-dashboard__grid">
+                        {pokemonList.slice(0, visibleCount).map((pokemon) => (
+                          <PokemonCard
+                            key={pokemon.id}
+                            pokemon={pokemon}
+                            isLoggedIn={isLoggedIn}
+                            onSavePokemon={handleSavePokemon}
+                            onDeletePokemon={handleDeletePokemon}
+                            savedPokemons={savedPokemons}
+                            onUnauthorizedClick={handleOpenRegister}
+                          />
+                        ))}
+                      </div>
+                      {visibleCount < pokemonList.length && (
+                        <button
+                          className="pokemon-dashboard__more-button"
+                          onClick={handleShowMore}
+                        >
+                          Mostrar más
+                        </button>
+                      )}
+                    </div>
+                  )}
+                  {!isLoading && pokemonList.length === 0 && !searchError && (
+                    <p className="pokemon-dashboard__placeholder">
+                      Busca un Pokémon para ver sus estadísticas...
                     </p>
                   )}
+                </section>
+              </main>
+            }
+          />
 
-                {/* 4. Bloque de resultados de tarjetas */}
-                {!isLoading && pokemonList.length > 0 && (
-                  <div className="pokemon-dashboard__container">
-                    <div className="pokemon-dashboard__grid">
-                      {pokemonList.slice(0, visibleCount).map((pokemon) => (
-                        <PokemonCard key={pokemon.id} pokemon={pokemon} />
-                      ))}
-                    </div>
+          <Route
+            path="/saved-pokemons"
+            element={
+              <ProtectedRoute
+                component={SavedPokemons}
+                isLoggedIn={isLoggedIn}
+                onLoginClick={handleOpenLogin}
+                savedPokemons={savedPokemons}
+                onDeletePokemon={handleDeletePokemon}
+              />
+            }
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
 
-                    {/* Botón Mostrar más condicional */}
-                    {visibleCount < pokemonList.length && (
-                      <button
-                        className="pokemon-dashboard__more-button"
-                        onClick={handleShowMore}
-                      >
-                        Mostrar más
-                      </button>
-                    )}
-                  </div>
-                )}
+        <About />
+        <Footer />
 
-                {!isLoading && pokemonList.length === 0 && !searchError && (
-                  <p className="pokemon-dashboard__placeholder">
-                    Busca un Pokémon en la página de inicio para ver sus
-                    estadísticas aquí...
-                  </p>
-                )}
-              </section>
-            </main>
-          }
+        <Login
+          isOpen={isLoginPopupOpen}
+          onClose={handleClosePopups}
+          onLogin={handleLogin}
+          onSwitchToRegister={handleOpenRegister}
+          apiError={apiError}
         />
-      </Routes>
 
-      <About />
-      <Footer />
+        <Register
+          isOpen={isRegisterPopupOpen}
+          onClose={handleClosePopups}
+          onRegister={handleRegister}
+          onSwitchToLogin={handleOpenLogin}
+          apiError={apiError}
+        />
 
-      <PopupWithForm isOpen={isPopupOpen} onClose={handleClosePopup} />
-    </div>
+        <InfoTooltip
+          isOpen={isInfoTooltipOpen}
+          onClose={handleClosePopups}
+          onSwitchToLogin={handleOpenLogin}
+        />
+      </div>
+    </CurrentUserContext.Provider>
   );
 }
 

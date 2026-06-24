@@ -1,13 +1,17 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import "./Navigation.css";
 
-function Navigation({ onLoginClick }) {
+function Navigation({ isLoggedIn, onLoginClick, onSignOut }) {
+  // Consumimos el contexto global directamente aquí
+  const currentUser = useContext(CurrentUserContext);
+
   return (
     <nav className="navigation">
       <ul className="navigation__list">
+        {/* Enlace siempre visible */}
         <li className="navigation__item">
-          {/* NavLink añade automáticamente una clase "active" si estás en esa ruta */}
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -17,6 +21,8 @@ function Navigation({ onLoginClick }) {
             Inicio
           </NavLink>
         </li>
+
+        {/* Enlace público original */}
         <li className="navigation__item">
           <NavLink
             to="/dashboard"
@@ -27,15 +33,43 @@ function Navigation({ onLoginClick }) {
             Dashboard
           </NavLink>
         </li>
+
+        {/* Enlace protegido: Solo se muestra si el usuario inició sesión */}
+        {isLoggedIn && (
+          <li className="navigation__item">
+            <NavLink
+              to="/saved-pokemons"
+              className={({ isActive }) =>
+                `navigation__link ${isActive ? "navigation__link_active" : ""}`
+              }
+            >
+              Pokémones guardados
+            </NavLink>
+          </li>
+        )}
+
+        {/* Renderizado condicional del botón de autenticación */}
         <li className="navigation__item">
-          {/* El botón de acceso que vimos en el Figma */}
-          <button
-            type="button"
-            className="navigation__button"
-            onClick={onLoginClick}
-          >
-            Iniciar Sesión
-          </button>
+          {isLoggedIn ? (
+            <button
+              type="button"
+              className="navigation__button navigation__button_type_logout"
+              onClick={onSignOut}
+            >
+              <span className="navigation__user-name">
+                {currentUser?.name || "Entrenador"}
+              </span>
+              <span className="navigation__logout-icon"></span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="navigation__button"
+              onClick={onLoginClick}
+            >
+              Iniciar Sesión
+            </button>
+          )}
         </li>
       </ul>
     </nav>

@@ -1,0 +1,64 @@
+/* src/components/SavedPokemons/SavedPokemons.css */
+.saved-pokemons {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.saved-pokemons__info {
+  background-color: #fff;
+  padding: 40px 104px 56px;
+  color: #1a1b22;
+}
+
+.saved-pokemons__subtitle {
+  font-family:
+    "Roboto", Arial, sans-serif; /* O la tipografía principal de tu proyecto */
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #7a7a7a; /* Un gris suave para que actúe como subtexto */
+  text-transform: uppercase; /* Opcional: si quieres que vaya en mayúsculas como en News Explorer */
+  letter-spacing: 1px;
+  margin: 0 0 16px 0; /* Agrega un margen abajo para separarlo del título principal */
+  padding: 0;
+}
+
+.saved-pokemons__title {
+  margin: 0 0 24px 0; /* Espacio abajo del título para separarlo de las palabras clave */
+  font-size: 40px; /* Ajusta según el tamaño de tu diseño */
+  font-weight: 900;
+  line-height: 1.2;
+  color: #000000;
+}
+
+.saved-pokemons__keywords {
+  font-size: 18px;
+  line-height: 24px;
+  margin: 0;
+}
+
+.saved-pokemons__grid-container {
+  background-color: #f5f6f7; /* Gris claro de fondo de resultados */
+  padding: 60px 104px;
+  min-height: calc(100vh - 400px); /* Para que el footer se quede abajo */
+}
+
+/* Responsividad básica para pantallas más pequeñas */
+@media screen and (max-width: 1024px) {
+  .saved-pokemons__info {
+    padding: 24px 40px 32px;
+  }
+  .saved-pokemons__grid-container {
+    padding: 32px 40px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .saved-pokemons__info {
+    padding: 16px 16px 32px;
+  }
+  .saved-pokemons__grid-container {
+    padding: 24px 16px;
+  }
+}
